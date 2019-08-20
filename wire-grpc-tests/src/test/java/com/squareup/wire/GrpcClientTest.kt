@@ -41,6 +41,7 @@ import routeguide.Rectangle
 import routeguide.RouteGuideClient
 import routeguide.RouteNote
 import routeguide.RouteSummary
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
@@ -325,6 +326,20 @@ class GrpcClientTest {
       assertThat(responseChannel.receive()).isEqualTo(RouteNote(message = "welcome"))
       requestChannel.close()
       assertThat(responseChannel.receiveOrNull()).isNull()
+    }
+  }
+
+  @Test
+  fun cancelOutboundStream() {
+    mockService.enqueue(ReceiveCall("/routeguide.RouteGuide/RouteChat"))
+    mockService.enqueueSendNote(message = "welcome")
+    mockService.enqueue(MockRouteGuideService.Action.ReceiveError)
+
+    val (requestChannel, responseChannel) = routeGuideService.RouteChat()
+    runBlocking {
+      assertThat(responseChannel.receive()).isEqualTo(RouteNote(message = "welcome"))
+      requestChannel.close(IOException("boom!"))
+      mockService.awaitSuccess()
     }
   }
 }
