@@ -21,7 +21,7 @@ configurations {
 }
 
 dependencies {
-  baseline('com.squareup.wire:wire-runtime:3.0.0-alpha01') {
+  baseline('com.squareup.wire:wire-runtime:3.7.0') {
     transitive = false
     force = true
   }
