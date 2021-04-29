@@ -1,0 +1,13 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.squareup.wire:wire-runtime
+    versions:
+    - 3.5.0
+    - 3.6.0
+    - 3.6.1
